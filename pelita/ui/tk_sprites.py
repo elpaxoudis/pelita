@@ -161,6 +161,28 @@ class BotSprite(TkSprite):
 class Wall(TkSprite):
     def draw(self, canvas, universe=None):
         scale = (self.mesh.half_scale_x + self.mesh.half_scale_y) * 0.5
+
+        wall_col = col(48, 26, 22)
+
+        import random
+        r = random.randint(0, 15)
+        g = random.randint(0, 15)
+        b = random.randint(0, 15)
+        wall_col = col(r*16, g*16, b*16)
+
+        def rb_col(idx, width, phase=0):
+            import math
+            freq = math.pi * 2 / width
+            r = math.sin(freq * idx + 2 + phase) * 127 + 128
+            g = math.sin(freq * idx + 0 + phase) * 127 + 128
+            b = math.sin(freq * idx + 4 + phase) * 127 + 128
+            return (int(r), int(g), int(b))
+
+        if self.x == 0 or self.y == 0:
+            wall_col = col(*rb_col(self.x + self.y, 16, universe))
+        elif self.x == self.mesh.mesh_width - 1 or self.y == self.mesh.mesh_height - 1:
+            wall_col = col(*rb_col(- self.x - self.y, 16, universe))
+
         if not ((0, 1) in self.wall_neighbours or
                 (1, 0) in self.wall_neighbours or
                 (0, -1) in self.wall_neighbours or
@@ -168,7 +190,7 @@ class Wall(TkSprite):
             # if there is no direct neighbour, we can’t connect.
             # draw only a small dot.
             # TODO add diagonal lines
-            canvas.create_line(self.screen((-0.3, 0)), self.screen((+0.3, 0)), fill=col(48, 26, 22),
+            canvas.create_line(self.screen((-0.3, 0)), self.screen((+0.3, 0)), fill=wall_col,
                                width=0.8 * scale, tag=(self.tag, "wall"), capstyle="round")
         else:
             neighbours = [(-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0)]
@@ -184,7 +206,7 @@ class Wall(TkSprite):
                             neighbours[(index - 1) % len(neighbours)] in self.wall_neighbours):
                             pass
                         else:
-                            canvas.create_line(self.screen((0, 0)), self.screen((2*dx, 2*dy)), fill=col(48, 26, 22),
+                            canvas.create_line(self.screen((0, 0)), self.screen((2*dx, 2*dy)), fill=wall_col,
                                                width=0.8 * scale, tag=(self.tag, "wall"), capstyle="round")
 
 class Food(TkSprite):

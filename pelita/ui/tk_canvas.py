@@ -259,6 +259,12 @@ class UiCanvas(object):
             self.current_universe = universe
 
         if round is not None and turn is not None:
+            import random
+            r = random.randint(0, 15)
+            g = random.randint(0, 15)
+            b = random.randint(0, 15)
+            self.canvas.configure(background=col(r*16, g*16, b*16))
+
             self.game_status_info = lambda: self.draw_status_info(turn, round, game_state.get("layout_name", ""))
         self.game_status_info()
 
@@ -449,9 +455,10 @@ class UiCanvas(object):
                 food_item.draw(self.canvas)
 
     def draw_maze(self, universe):
-        if not self.size_changed:
-            return
+        #if not self.size_changed:
+        #    return
         self.canvas.delete("wall")
+        self.t = getattr(self, "t", 0) + 1
         for position, items in universe.maze.items():
             model_x, model_y = position
             if datamodel.Wall in items:
@@ -464,7 +471,7 @@ class UiCanvas(object):
                                 wall_item.wall_neighbours.append( (dx, dy) )
                         except IndexError:
                             pass
-                wall_item.draw(self.canvas)
+                wall_item.draw(self.canvas, self.t)
 
     def init_bots(self, universe):
         for bot in universe.bots:
