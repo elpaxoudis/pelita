@@ -457,8 +457,8 @@ class UiCanvas(object):
                 food_item.draw(self.canvas)
 
     def draw_maze(self, universe):
-        #if not self.size_changed:
-        #    return
+        if not self.size_changed and not self._rainbow:
+            return
         self.canvas.delete("wall")
         if self._rainbow:
             self.t = getattr(self, "t", 0) + 1
