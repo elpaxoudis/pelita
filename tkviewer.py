@@ -26,6 +26,8 @@ parser.add_argument('--geometry', type=geometry_string,
                     help='geometry')
 parser.add_argument('--delay', type=int,
                     help='delay')
+parser.add_argument('--rainbow', action='store_const', const=True, help=argparse.SUPPRESS)
+
 
 def run_viewer():
     args = parser.parse_args()
@@ -33,7 +35,8 @@ def run_viewer():
         'address': args.subscribe_sock,
         'controller_address': args.controller_address,
         'geometry': args.geometry,
-        'delay': args.delay
+        'delay': args.delay,
+        'rainbow': args.rainbow
     }
     v = TkViewer(**dict((k, v) for k, v in list(tkargs.items()) if v is not None))
     v.run()

@@ -107,7 +107,7 @@ def get_python_process():
         raise RuntimeError("Cannot retrieve current Python executable.")
     return py_proc
 
-def run_external_viewer(subscribe_sock, controller, geometry, delay):
+def run_external_viewer(subscribe_sock, controller, geometry, delay, rainbow):
     # Something on OS X prevents Tk from running in a forked process.
     # Therefore we cannot use multiprocessing here. subprocess works, though.
     viewer_args = [ str(subscribe_sock) ]
@@ -117,6 +117,8 @@ def run_external_viewer(subscribe_sock, controller, geometry, delay):
         viewer_args += ["--geometry", "{0}x{1}".format(*geometry)]
     if delay:
         viewer_args += ["--delay", str(delay)]
+    if rainbow:
+        viewer_args += ["--rainbow"]
 
     tkviewer = os.path.join(os.path.dirname(sys.argv[0]), "tkviewer.py")
     return subprocess.Popen([get_python_process(), tkviewer] + viewer_args)
@@ -347,6 +349,8 @@ viewer_opt.add_argument('--tk', action='store_const', const='tk',
 viewer_opt.add_argument('--tk-no-sync', action='store_const', const='tk-no-sync',
                         dest='viewer', help='use the unsynchronised tk viewer')
 parser.set_defaults(viewer='tk')
+
+parser.add_argument('--rainbow', action='store_const', const=True, help=argparse.SUPPRESS)
 
 layout_opt = parser.add_mutually_exclusive_group()
 layout_opt.add_argument('--layoutfile', metavar='FILE',
@@ -628,7 +632,7 @@ def run_game():
             sync_address_tk = None
 
         subscribe_sock = config["publish-addr"].replace('*', 'localhost')
-        tkprocess = run_external_viewer(subscribe_sock, sync_address_tk, args.geometry, delay)
+        tkprocess = run_external_viewer(subscribe_sock, sync_address_tk, args.geometry, delay, args.rainbow)
         external_viewers.append(tkprocess)
 
         if not sync_address_tk:

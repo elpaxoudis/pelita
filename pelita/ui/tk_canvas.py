@@ -101,7 +101,7 @@ class Trafo(object):
 
 
 class UiCanvas(object):
-    def __init__(self, master, geometry=None):
+    def __init__(self, master, geometry=None, rainbow=False):
         self.game_finish_overlay = lambda: None
         self.game_status_info = lambda: None
 
@@ -112,6 +112,7 @@ class UiCanvas(object):
 
         self.master = master
         self.canvas = None
+        self._rainbow = rainbow
 
         self.current_universe = None
 
@@ -259,11 +260,12 @@ class UiCanvas(object):
             self.current_universe = universe
 
         if round is not None and turn is not None:
-            import random
-            r = random.randint(0, 15)
-            g = random.randint(0, 15)
-            b = random.randint(0, 15)
-            self.canvas.configure(background=col(r*16, g*16, b*16))
+            if self._rainbow:
+                import random
+                r = random.randint(0, 15)
+                g = random.randint(0, 15)
+                b = random.randint(0, 15)
+                self.canvas.configure(background=col(r*16, g*16, b*16))
 
             self.game_status_info = lambda: self.draw_status_info(turn, round, game_state.get("layout_name", ""))
         self.game_status_info()
@@ -445,7 +447,7 @@ class UiCanvas(object):
         self.size_changed = True
 
     def draw_food(self, universe):
-        if not self.size_changed:
+        if not self.size_changed and not self._rainbow:
             return
         self.canvas.delete("food")
         for position, items in universe.maze.items():
@@ -458,7 +460,8 @@ class UiCanvas(object):
         #if not self.size_changed:
         #    return
         self.canvas.delete("wall")
-        self.t = getattr(self, "t", 0) + 1
+        if self._rainbow:
+            self.t = getattr(self, "t", 0) + 1
         for position, items in universe.maze.items():
             model_x, model_y = position
             if datamodel.Wall in items:
@@ -471,7 +474,10 @@ class UiCanvas(object):
                                 wall_item.wall_neighbours.append( (dx, dy) )
                         except IndexError:
                             pass
-                wall_item.draw(self.canvas, self.t)
+                if self._rainbow:
+                    wall_item.draw(self.canvas, self.t)
+                else:
+                    wall_item.draw(self.canvas)
 
     def init_bots(self, universe):
         for bot in universe.bots:
@@ -488,7 +494,7 @@ class UiCanvas(object):
 
 class TkApplication(object):
     def __init__(self, master, address, controller_address=None,
-                 geometry=None, delay=1):
+                 geometry=None, delay=1, rainbow=False):
         self.master = master
         self.master.configure(background="white")
 
@@ -510,7 +516,7 @@ class TkApplication(object):
 
         self.frame.pack(fill=tkinter.BOTH, expand=tkinter.YES)
 
-        self.ui_canvas = UiCanvas(self, geometry=geometry)
+        self.ui_canvas = UiCanvas(self, geometry=geometry, rainbow=rainbow)
 
         self._min_delay = 1
         self._delay = delay

@@ -57,11 +57,12 @@ class TkViewer(object):
     app : The TkApplication class
 
     """
-    def __init__(self, address, controller_address=None, geometry=None, delay=1):
+    def __init__(self, address, controller_address=None, geometry=None, delay=1, rainbow=False):
         self.address = address
         self.controller_address = controller_address
         self.delay = delay
         self.geometry = geometry
+        self.rainbow = rainbow
 
     def run(self):
         self.root = tkinter.Tk()
@@ -76,7 +77,8 @@ class TkViewer(object):
                                  address=self.address,
                                  controller_address=self.controller_address,
                                  geometry=self.geometry,
-                                 delay=self.delay)
+                                 delay=self.delay,
+                                 rainbow=self.rainbow)
         # schedule next read
         self.root.after_idle(self.app.read_queue)
         try:
