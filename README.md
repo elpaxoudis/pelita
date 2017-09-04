@@ -22,3 +22,5 @@ acknowledgements can be found at: http://aspp.github.com/pelita/info.html
 Information for developers can be found
 at: http://aspp.github.com/pelita/development.html
 
+## Nikos Agents
+I will try to build my own agents for pelita.
