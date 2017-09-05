@@ -152,4 +152,4 @@ class KillerDefender(AbstractPlayer):
             return move
 
 def factory():
-    return SimpleTeam("VS TEAM", KillerDefender(), KillerDefender())
+    return SimpleTeam("VS TEAM", KillerDefende(), KillerDefender())
