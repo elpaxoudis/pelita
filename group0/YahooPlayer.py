@@ -11,7 +11,7 @@ class YahooPlayer(AbstractPlayer):
         if datamodel.east in self.legal_moves:
             return datamodel.east
         else:
-            print(self.legal_moves)
+            # print(self.legal_moves)
             return self.rnd.choice(list(self.legal_moves.keys()))
         # if self.current_pos in self.visited:
         #     self.visited.remove(self.current_pos)
@@ -27,5 +27,5 @@ class YahooPlayer(AbstractPlayer):
         # # more than one move left
         # return self.rnd.choice(list(moves.keys()))
 
-def factory():
-    return SimpleTeam("The Great Explorers", YahooPlayer(), YahooPlayer())
+# def factory():
+#     return SimpleTeam("The Great Explorers", YahooPlayer(), YahooPlayer())

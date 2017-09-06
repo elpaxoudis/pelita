@@ -10,7 +10,6 @@ from .FoodEatingPlayer import FoodEatingPlayer
 from .SmartEatingPlayer import SmartEatingPlayer
 from .RandomExplorerPlayer import RandomExplorerPlayer
 from .SmartRandomPlayer import SmartRandomPlayer
-from .YahooPlayer import YahooPlayer
 
 SANE_PLAYERS = [
     RandomPlayer,
